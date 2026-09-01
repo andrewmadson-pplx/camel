@@ -14,7 +14,7 @@
 import copy
 import json
 from datetime import datetime
-from typing import List
+from typing import Any, Dict, List, Optional
 
 import pytest
 from jsonschema.exceptions import SchemaError
@@ -186,6 +186,30 @@ def test_get_openai_tool_schema():
         assert openai_tool_schema == expect_res_v2
     else:
         assert openai_tool_schema == expect_res_v1
+
+
+def test_free_form_dict_parameter_disables_strict_mode():
+    def search(extra_params: Optional[Dict[str, Any]] = None) -> str:
+        r"""Search with optional provider-specific parameters.
+
+        Args:
+            extra_params: Additional provider-specific parameters.
+        """
+        return str(extra_params)
+
+    schema = get_openai_tool_schema(search)
+    function_schema = schema['function']
+    extra_params_schema = function_schema['parameters']['properties'][
+        'extra_params'
+    ]
+    object_schema = next(
+        item
+        for item in extra_params_schema['anyOf']
+        if item.get('type') == 'object'
+    )
+
+    assert function_schema['strict'] is False
+    assert object_schema['additionalProperties'] is True
 
 
 def test_different_docstring_style():

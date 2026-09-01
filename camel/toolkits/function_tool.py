@@ -335,7 +335,10 @@ def sanitize_and_enforce_required(parameters_dict):
     - Removes invalid 'default' fields from the parameters schema.
     - Ensures all fields are marked as required or have null type for optional
     fields.
-    - Recursively adds additionalProperties: false to all nested objects.
+    - Recursively adds additionalProperties: false to nested objects when the
+    setting is unspecified.
+    - Disables strict mode when an object explicitly allows additional
+    properties.
 
     Args:
         parameters_dict (dict): The dictionary representing the function
@@ -343,23 +346,26 @@ def sanitize_and_enforce_required(parameters_dict):
 
     Returns:
         dict: The updated dictionary with invalid defaults removed and all
-            fields properly configured for strict mode.
+            fields configured for OpenAI function calling.
     """
 
-    def _add_additional_properties_false(obj):
-        r"""Recursively add additionalProperties: false to all objects."""
+    def _sanitize_additional_properties(obj):
+        r"""Add strict defaults and report strict-mode compatibility."""
+        strict_compatible = True
         if isinstance(obj, dict):
-            if (
-                obj.get("type") == "object"
-                and "additionalProperties" not in obj
-            ):
-                obj["additionalProperties"] = False
+            if obj.get("type") == "object":
+                if "additionalProperties" not in obj:
+                    obj["additionalProperties"] = False
+                elif obj["additionalProperties"] is not False:
+                    strict_compatible = False
 
             # Process nested structures
             for key, value in obj.items():
                 if key == "properties" and isinstance(value, dict):
                     for prop_value in value.values():
-                        _add_additional_properties_false(prop_value)
+                        strict_compatible &= _sanitize_additional_properties(
+                            prop_value
+                        )
                 elif key in [
                     "items",
                     "allOf",
@@ -367,13 +373,20 @@ def sanitize_and_enforce_required(parameters_dict):
                     "anyOf",
                 ] and isinstance(value, (dict, list)):
                     if isinstance(value, dict):
-                        _add_additional_properties_false(value)
+                        strict_compatible &= _sanitize_additional_properties(
+                            value
+                        )
                     elif isinstance(value, list):
                         for item in value:
-                            _add_additional_properties_false(item)
+                            strict_compatible &= (
+                                _sanitize_additional_properties(item)
+                            )
                 elif key == "$defs" and isinstance(value, dict):
                     for def_value in value.values():
-                        _add_additional_properties_false(def_value)
+                        strict_compatible &= _sanitize_additional_properties(
+                            def_value
+                        )
+        return strict_compatible
 
     # Check if 'function' and 'parameters' exist
     if (
@@ -441,8 +454,11 @@ def sanitize_and_enforce_required(parameters_dict):
         # Set all fields as required (strict mode requirement)
         parameters['required'] = required_fields
 
-        # Recursively add additionalProperties: false to all objects
-        _add_additional_properties_false(parameters)
+        # Strict mode requires every object to disallow additional properties.
+        # Preserve explicit free-form object schemas by disabling strict mode
+        # instead of changing what those parameters can accept.
+        if not _sanitize_additional_properties(parameters):
+            parameters_dict['function']['strict'] = False
 
     return parameters_dict
 
