@@ -157,11 +157,14 @@ class OpenAIModel(BaseModelBackend):
         self._responses_previous_response_id_by_session: Dict[str, str] = {}
         self._responses_last_message_count_by_session: Dict[str, int] = {}
 
-        # Store additional client args for later use
-        self._max_retries = max_retries
-
         super().__init__(
-            model_type, model_config_dict, api_key, url, token_counter, timeout
+            model_type=model_type,
+            model_config_dict=model_config_dict,
+            api_key=api_key,
+            url=url,
+            token_counter=token_counter,
+            timeout=timeout,
+            max_retries=max_retries,
         )
 
         # Use custom clients if provided, otherwise create new ones

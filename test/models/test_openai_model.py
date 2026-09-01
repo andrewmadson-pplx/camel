@@ -55,6 +55,22 @@ def test_openai_model(model_type: ModelType):
     assert isinstance(model.model_type.token_limit, int)
 
 
+def test_max_retries_passed_to_openai_clients():
+    with (
+        patch("camel.models.openai_model.OpenAI") as mock_openai,
+        patch("camel.models.openai_model.AsyncOpenAI") as mock_async_openai,
+    ):
+        model = OpenAIModel(
+            model_type=ModelType.GPT_4O_MINI,
+            api_key="test-key",
+            max_retries=0,
+        )
+
+        assert model._max_retries == 0
+        assert mock_openai.call_args.kwargs["max_retries"] == 0
+        assert mock_async_openai.call_args.kwargs["max_retries"] == 0
+
+
 def test_prompt_cache_key_passed_to_api():
     """Test that prompt_cache_key is passed to the OpenAI API when set."""
     with patch("camel.models.openai_model.OpenAI") as mock_openai:
