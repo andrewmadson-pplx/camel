@@ -2020,6 +2020,7 @@ class ModelPlatformType(Enum):
     AVIAN = "avian"
     ATLASCLOUD = "atlascloud"
     XAI = "xai"
+    PERPLEXITY = "perplexity"
 
     @classmethod
     def from_name(cls, name):

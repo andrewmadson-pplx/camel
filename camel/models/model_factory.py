@@ -49,6 +49,7 @@ from camel.models.openai_compatible_model import OpenAICompatibleModel
 from camel.models.openai_model import OpenAIModel
 from camel.models.openrouter_model import OpenRouterModel
 from camel.models.orcarouter_model import OrcaRouterModel
+from camel.models.perplexity_model import PerplexityModel
 from camel.models.ppio_model import PPIOModel
 from camel.models.qianfan_model import QianfanModel
 from camel.models.qwen_model import QwenModel
@@ -103,6 +104,7 @@ class ModelFactory:
         ModelPlatformType.LMSTUDIO: LMStudioModel,
         ModelPlatformType.MINIMAX: MinimaxModel,
         ModelPlatformType.OPENROUTER: OpenRouterModel,
+        ModelPlatformType.PERPLEXITY: PerplexityModel,
         ModelPlatformType.ORCAROUTER: OrcaRouterModel,
         ModelPlatformType.ATLASCLOUD: AtlasCloudModel,
         ModelPlatformType.ZHIPU: ZhipuAIModel,

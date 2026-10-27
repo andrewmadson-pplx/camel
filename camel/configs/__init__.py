@@ -45,6 +45,7 @@ from .ollama_config import OLLAMA_API_PARAMS, OllamaConfig
 from .openai_config import OPENAI_API_PARAMS, ChatGPTConfig
 from .openrouter_config import OPENROUTER_API_PARAMS, OpenRouterConfig
 from .orcarouter_config import ORCAROUTER_API_PARAMS, OrcaRouterConfig
+from .perplexity_config import PERPLEXITY_API_PARAMS, PerplexityConfig
 from .ppio_config import PPIO_API_PARAMS, PPIOConfig
 from .qianfan_config import QIANFAN_API_PARAMS, QianfanConfig
 from .qwen_config import QWEN_API_PARAMS, QwenConfig
@@ -94,6 +95,7 @@ __all__ = [
     'OLLAMA_API_PARAMS',
     'OPENAI_API_PARAMS',
     'OPENROUTER_API_PARAMS',
+    'PERPLEXITY_API_PARAMS',
     'ORCAROUTER_API_PARAMS',
     'PPIO_API_PARAMS',
     'QIANFAN_API_PARAMS',
@@ -141,6 +143,7 @@ __all__ = [
     'NvidiaConfig',
     'OllamaConfig',
     'OpenRouterConfig',
+    'PerplexityConfig',
     'OrcaRouterConfig',
     'PPIOConfig',
     'QianfanConfig',
