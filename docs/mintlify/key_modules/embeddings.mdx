@@ -61,12 +61,18 @@ Image embeddings use neural networks (like CNNs) or vision-language models to tu
     <br />
     <b>Requires:</b> Together AI API Key.
   </Card>
+  <Card title="PerplexityEmbedding" icon="magnifying-glass">
+    Perplexity’s Embeddings API for text embeddings.
+    <br />
+    <b>Requires:</b> Perplexity API Key.
+  </Card>
 </CardGroup>
 
 ## Usage Examples
 
 <Note>
-  Make sure you have the right API key set (OpenAI, Mistral, Azure, or Together)
+  Make sure you have the right API key set (OpenAI, Mistral, Azure, Together,
+  or Perplexity)
   for the embedding backend you want to use.
 </Note>
 
@@ -145,6 +151,19 @@ from camel.embeddings import TogetherEmbedding
 
 together_embedding = TogetherEmbedding(model_type="togethercomputer/m2-bert-80M-8k-retrieval")
 embeddings = together_embedding.embed_list(["Hello, world!", "Another example"])
+````
+
+</CodeGroup>
+</Card>
+
+<Card title="Text Embeddings with Perplexity" icon="magnifying-glass">
+<CodeGroup>
+```python perplexity_embed.py
+from camel.embeddings import PerplexityEmbedding
+from camel.types import EmbeddingModelType
+
+perplexity_embedding = PerplexityEmbedding(model_type=EmbeddingModelType.PPLX_EMBED_V1_4B)
+embeddings = perplexity_embedding.embed_list(["Hello, world!", "Another example"])
 ````
 
 </CodeGroup>
