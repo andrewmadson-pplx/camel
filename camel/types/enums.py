@@ -1802,6 +1802,11 @@ class EmbeddingModelType(Enum):
 
     GEMINI_EMBEDDING_EXP = "gemini-embedding-exp-03-07"
 
+    PPLX_EMBED_V1_0_6B = "pplx-embed-v1-0.6b"
+    PPLX_EMBED_V1_4B = "pplx-embed-v1-4b"
+    PPLX_EMBED_V2_CONTEXT_0_6B = "pplx-embed-v2-context-0.6b"
+    PPLX_EMBED_V2_CONTEXT_9B = "pplx-embed-v2-context-9b"
+
     @property
     def is_openai(self) -> bool:
         r"""Returns whether this type of models is an OpenAI-released model."""
@@ -1838,6 +1843,16 @@ class EmbeddingModelType(Enum):
         }
 
     @property
+    def is_perplexity(self) -> bool:
+        r"""Returns whether this type of models is a Perplexity model."""
+        return self in {
+            EmbeddingModelType.PPLX_EMBED_V1_0_6B,
+            EmbeddingModelType.PPLX_EMBED_V1_4B,
+            EmbeddingModelType.PPLX_EMBED_V2_CONTEXT_0_6B,
+            EmbeddingModelType.PPLX_EMBED_V2_CONTEXT_9B,
+        }
+
+    @property
     def output_dim(self) -> int:
         if self in {
             EmbeddingModelType.JINA_COLBERT_V2,
@@ -1862,6 +1877,14 @@ class EmbeddingModelType(Enum):
             return 1024
         elif self is EmbeddingModelType.GEMINI_EMBEDDING_EXP:
             return 3072
+        elif self is EmbeddingModelType.PPLX_EMBED_V1_0_6B:
+            return 1024
+        elif self is EmbeddingModelType.PPLX_EMBED_V1_4B:
+            return 2560
+        elif self is EmbeddingModelType.PPLX_EMBED_V2_CONTEXT_0_6B:
+            return 1024
+        elif self is EmbeddingModelType.PPLX_EMBED_V2_CONTEXT_9B:
+            return 2048
         else:
             raise ValueError(f"Unknown model type {self}.")
 
