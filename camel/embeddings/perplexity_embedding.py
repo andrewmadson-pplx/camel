@@ -35,8 +35,11 @@ class PerplexityEmbedding(BaseEmbedding[str]):
         api_key (Optional[str], optional): The API key for authenticating
             with Perplexity. (default: :obj:`None`)
         dimensions (Optional[int], optional): The dimension of the output
-            embeddings. Both models support smaller sizes.
+            embeddings. All models support smaller sizes.
             (default: :obj:`None`)
+        input_type (Optional[str], optional): Whether the texts are search
+            queries or documents to index. Options: query, document.
+            Required by the v2 models. (default: :obj:`"query"`)
     """
 
     @dependencies_required('requests')
@@ -46,6 +49,7 @@ class PerplexityEmbedding(BaseEmbedding[str]):
         model_type: EmbeddingModelType = EmbeddingModelType.PPLX_EMBED_V1_4B,
         api_key: str | None = None,
         dimensions: int | None = None,
+        input_type: str | None = "query",
     ) -> None:
         if not model_type.is_perplexity:
             raise ValueError(
@@ -54,6 +58,7 @@ class PerplexityEmbedding(BaseEmbedding[str]):
             )
         self.model_type = model_type
         self.dimensions = dimensions
+        self.input_type = input_type
         self.output_dim = dimensions or model_type.output_dim
         self._api_key = api_key or os.environ.get("PERPLEXITY_API_KEY")
         self.url = 'https://api.perplexity.ai/v1/embeddings'
@@ -90,6 +95,8 @@ class PerplexityEmbedding(BaseEmbedding[str]):
         }
         if self.dimensions is not None:
             data["dimensions"] = self.dimensions
+        if self.input_type is not None:
+            data["input_type"] = self.input_type
 
         try:
             response = requests.post(

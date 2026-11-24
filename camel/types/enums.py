@@ -1804,6 +1804,8 @@ class EmbeddingModelType(Enum):
 
     PPLX_EMBED_V1_0_6B = "pplx-embed-v1-0.6b"
     PPLX_EMBED_V1_4B = "pplx-embed-v1-4b"
+    PPLX_EMBED_V2_CONTEXT_0_6B = "pplx-embed-v2-context-0.6b"
+    PPLX_EMBED_V2_CONTEXT_9B = "pplx-embed-v2-context-9b"
 
     @property
     def is_openai(self) -> bool:
@@ -1846,6 +1848,8 @@ class EmbeddingModelType(Enum):
         return self in {
             EmbeddingModelType.PPLX_EMBED_V1_0_6B,
             EmbeddingModelType.PPLX_EMBED_V1_4B,
+            EmbeddingModelType.PPLX_EMBED_V2_CONTEXT_0_6B,
+            EmbeddingModelType.PPLX_EMBED_V2_CONTEXT_9B,
         }
 
     @property
@@ -1877,6 +1881,10 @@ class EmbeddingModelType(Enum):
             return 1024
         elif self is EmbeddingModelType.PPLX_EMBED_V1_4B:
             return 2560
+        elif self is EmbeddingModelType.PPLX_EMBED_V2_CONTEXT_0_6B:
+            return 1024
+        elif self is EmbeddingModelType.PPLX_EMBED_V2_CONTEXT_9B:
+            return 2048
         else:
             raise ValueError(f"Unknown model type {self}.")
 

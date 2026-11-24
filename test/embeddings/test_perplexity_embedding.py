@@ -50,7 +50,23 @@ def test_embed_list(mock_post):
         "input": ["first", "second"],
         "encoding_format": "base64_int8",
         "dimensions": 256,
+        "input_type": "query",
     }
+
+
+@patch.dict(os.environ, {"PERPLEXITY_API_KEY": "fake_api_key"})
+@patch('requests.post')
+def test_embed_list_v2_document(mock_post):
+    mock_post.return_value.json.return_value = {
+        "data": [{"index": 0, "embedding": _encode([1])}]
+    }
+    embedding = PerplexityEmbedding(
+        model_type=EmbeddingModelType.PPLX_EMBED_V2_CONTEXT_9B,
+        input_type="document",
+    )
+    assert embedding.embed_list(["doc"]) == [[1.0]]
+    assert embedding.get_output_dim() == 2048
+    assert mock_post.call_args[1]["json"]["input_type"] == "document"
 
 
 @patch.dict(os.environ, {"PERPLEXITY_API_KEY": "fake_api_key"})

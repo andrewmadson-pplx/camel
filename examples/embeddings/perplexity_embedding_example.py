@@ -48,3 +48,20 @@ print(len(small_embeddings), len(small_embeddings[0]))
 2 256
 ===============================================================================
 '''
+
+# Embed documents to index with a v2 model
+document_embed = PerplexityEmbedding(
+    model_type=EmbeddingModelType.PPLX_EMBED_V2_CONTEXT_0_6B,
+    input_type="document",
+)
+
+document_embeddings = document_embed.embed_list(
+    ["Paris is the capital of France."]
+)
+
+print(len(document_embeddings[0]))
+'''
+===============================================================================
+1024
+===============================================================================
+'''
